@@ -79,20 +79,47 @@ func _is_condition_met(achievement: Dictionary) -> bool:
 	var target: float = float(achievement.get("target", 0.0))
 	if metric == "aura_total":
 		return GameManager.aura_total >= target
+	if metric == "clicks_total":
+		return float(GameManager.clicks_total) >= target
 	if metric == "upgrade_count":
 		return float(_get_total_upgrade_levels()) >= target
+	if metric == "specific_upgrade_level":
+		return float(UpgradeManager.levels.get(str(achievement.get("upgrade_id", "")), 0)) >= target
+	if metric == "max_upgrade_level":
+		return float(_get_max_upgrade_level()) >= target
+	if metric == "category_level":
+		return float(_get_category_upgrade_levels(str(achievement.get("category", "")))) >= target
 	if metric == "aura_per_second":
 		return GameManager.aura_per_second >= target
+	if metric == "aura_per_click":
+		return GameManager.aura_per_click * GameManager.global_multiplier >= target
+	if metric == "essence":
+		return GameManager.essence >= target
 	if metric == "prestige_level":
 		return float(GameManager.prestige_level) >= target
 	if metric == "stage_index":
 		return float(AuraEvolutionManager.current_stage_index) >= target
+	if metric == "platinum":
+		return get_unlocked_count() >= achievements.size() - 1
 	return false
 
 func _get_total_upgrade_levels() -> int:
 	var total: int = 0
 	for upgrade_id in UpgradeManager.levels.keys():
 		total += int(UpgradeManager.levels.get(upgrade_id, 0))
+	return total
+
+func _get_max_upgrade_level() -> int:
+	var highest: int = 0
+	for upgrade_id in UpgradeManager.levels.keys():
+		highest = max(highest, int(UpgradeManager.levels.get(upgrade_id, 0)))
+	return highest
+
+func _get_category_upgrade_levels(category: String) -> int:
+	var total: int = 0
+	for upgrade in UpgradeManager.upgrades:
+		if str(upgrade.get("category", "")) == category:
+			total += int(UpgradeManager.levels.get(str(upgrade["id"]), 0))
 	return total
 
 func _notify_backend(achievement: Dictionary) -> void:

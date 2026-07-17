@@ -8,7 +8,10 @@ extends Control
 @onready var next_stage_label: Label = %NextStageLabel
 @onready var stage_panel: PanelContainer = %StagePanel
 @onready var stage_progress: ProgressBar = %StageProgress
+@onready var essence_panel: PanelContainer = %EssencePanel
 @onready var essence_label: Label = %EssenceLabel
+@onready var essence_gain_label: Label = %EssenceGainLabel
+@onready var essence_progress: ProgressBar = %EssenceProgress
 @onready var prestige_button: Button = %PrestigeButton
 @onready var music_button: Button = %MusicButton
 @onready var gym_background: Control = %GymBackground
@@ -36,6 +39,7 @@ var _pause_language: OptionButton
 var _pause_sfx_label: Label
 var _pause_music_label: Label
 var _pause_music_enabled: CheckBox
+var _pause_fullscreen: CheckBox
 var _pause_reduced_motion: CheckBox
 var _is_pause_settings_open: bool = false
 
@@ -58,6 +62,7 @@ func _ready() -> void:
 	_style_button(prestige_button, false)
 	_style_button(music_button, true)
 	_style_stage_panel()
+	_style_essence_panel()
 	_build_pause_menu()
 	_refresh()
 	_refresh_pause_text()
@@ -98,7 +103,7 @@ func _refresh() -> void:
 	click_label.text = "%s\n%s" % [LocalizationManager.t("ui.aura_per_click"), NumberFormatter.format(GameManager.aura_per_click * GameManager.global_multiplier)]
 	second_label.text = "%s\n%s" % [LocalizationManager.t("ui.aura_per_second"), NumberFormatter.format(GameManager.aura_per_second * GameManager.global_multiplier)]
 	level_label.text = "%s\n%s" % [LocalizationManager.t("ui.aura_level"), LocalizationManager.t(AuraEvolutionManager.get_current_stage().get("name_key", "stage.normal.name"))]
-	essence_label.text = "%s: %s" % [LocalizationManager.t("ui.essence"), NumberFormatter.format(GameManager.essence)]
+	_refresh_essence_meter()
 	var next_stage: Dictionary = AuraEvolutionManager.get_next_stage()
 	if next_stage.is_empty():
 		next_stage_label.text = LocalizationManager.t("ui.max_stage")
@@ -119,6 +124,31 @@ func _refresh() -> void:
 	prestige_button.text = LocalizationManager.t("ui.prestige")
 	prestige_button.disabled = not GameManager.can_prestige()
 	music_button.text = "♪" if AudioManager.is_music_enabled() else "×"
+
+func _refresh_essence_meter() -> void:
+	var prestige_requirement: float = 1000000.0
+	var progress_value: float = clamp(GameManager.aura_current / prestige_requirement, 0.0, 1.0)
+	var gained_essence: float = 0.0
+	if GameManager.can_prestige():
+		gained_essence = max(1.0, floor(sqrt(GameManager.aura_current / prestige_requirement)))
+	var bonus_percent: float = GameManager.essence * 5.0
+	essence_label.text = "%s\n%s" % [
+		LocalizationManager.t("ui.essence"),
+		LocalizationManager.t("ui.essence_bonus", {
+			"amount": NumberFormatter.format(GameManager.essence),
+			"bonus": NumberFormatter.format(bonus_percent)
+		})
+	]
+	if GameManager.can_prestige():
+		essence_gain_label.text = LocalizationManager.t("ui.essence_ready", {"amount": NumberFormatter.format(gained_essence)})
+	else:
+		essence_gain_label.text = LocalizationManager.t("ui.essence_next", {
+			"percent": NumberFormatter.format(progress_value * 100.0),
+			"target": NumberFormatter.format(prestige_requirement)
+		})
+	essence_progress.max_value = 1.0
+	essence_progress.value = progress_value
+	_apply_essence_meter_state()
 
 func _on_language_changed(_language: String) -> void:
 	_refresh_pause_text()
@@ -239,6 +269,56 @@ func _style_stage_panel() -> void:
 	stage_progress.add_theme_stylebox_override("background", background)
 	stage_progress.add_theme_stylebox_override("fill", fill)
 
+func _style_essence_panel() -> void:
+	var panel_style: StyleBoxFlat = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.025, 0.035, 0.07, 0.88)
+	panel_style.border_color = Color(0.36, 0.91, 1.0, 0.42)
+	panel_style.border_width_left = 1
+	panel_style.border_width_top = 1
+	panel_style.border_width_right = 1
+	panel_style.border_width_bottom = 1
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	essence_panel.add_theme_stylebox_override("panel", panel_style)
+	essence_label.add_theme_color_override("font_color", Color("#ecfeff"))
+	essence_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.72))
+	essence_label.add_theme_constant_override("shadow_offset_x", 2)
+	essence_label.add_theme_constant_override("shadow_offset_y", 2)
+	essence_gain_label.add_theme_color_override("font_color", Color("#facc15"))
+	essence_gain_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.72))
+	essence_gain_label.add_theme_constant_override("shadow_offset_x", 1)
+	essence_gain_label.add_theme_constant_override("shadow_offset_y", 1)
+	var background: StyleBoxFlat = StyleBoxFlat.new()
+	background.bg_color = Color(0.0, 0.0, 0.0, 0.38)
+	background.corner_radius_top_left = 6
+	background.corner_radius_top_right = 6
+	background.corner_radius_bottom_left = 6
+	background.corner_radius_bottom_right = 6
+	var fill: StyleBoxFlat = StyleBoxFlat.new()
+	fill.bg_color = Color("#22d3ee")
+	fill.corner_radius_top_left = 6
+	fill.corner_radius_top_right = 6
+	fill.corner_radius_bottom_left = 6
+	fill.corner_radius_bottom_right = 6
+	essence_progress.add_theme_stylebox_override("background", background)
+	essence_progress.add_theme_stylebox_override("fill", fill)
+
+func _apply_essence_meter_state() -> void:
+	var panel_style: StyleBoxFlat = essence_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	var fill: StyleBoxFlat = essence_progress.get_theme_stylebox("fill").duplicate() as StyleBoxFlat
+	if GameManager.can_prestige():
+		panel_style.border_color = Color(1.0, 0.78, 0.25, 0.70)
+		fill.bg_color = Color("#facc15")
+		essence_gain_label.add_theme_color_override("font_color", Color("#fff7d6"))
+	else:
+		panel_style.border_color = Color(0.36, 0.91, 1.0, 0.42)
+		fill.bg_color = Color("#22d3ee")
+		essence_gain_label.add_theme_color_override("font_color", Color("#facc15"))
+	essence_panel.add_theme_stylebox_override("panel", panel_style)
+	essence_progress.add_theme_stylebox_override("fill", fill)
+
 func _apply_stage_panel_colors(stage: Dictionary) -> void:
 	var primary: Color = Color(stage.get("primary_color", Color("#facc15")))
 	var panel_style: StyleBoxFlat = stage_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
@@ -342,6 +422,12 @@ func _build_pause_menu() -> void:
 	_pause_music_enabled.add_theme_color_override("font_color", Color("#dbeafe"))
 	_pause_settings_panel.add_child(_pause_music_enabled)
 
+	_pause_fullscreen = CheckBox.new()
+	_pause_fullscreen.button_pressed = SettingsManager.get_setting("fullscreen", false)
+	_pause_fullscreen.toggled.connect(func(value: bool): SettingsManager.set_setting("fullscreen", value))
+	_pause_fullscreen.add_theme_color_override("font_color", Color("#dbeafe"))
+	_pause_settings_panel.add_child(_pause_fullscreen)
+
 	_pause_reduced_motion = CheckBox.new()
 	_pause_reduced_motion.button_pressed = SettingsManager.get_setting("reduced_motion", false)
 	_pause_reduced_motion.toggled.connect(func(value: bool): SettingsManager.set_setting("reduced_motion", value))
@@ -409,6 +495,7 @@ func _show_pause_settings() -> void:
 	_pause_main_panel.visible = false
 	_pause_settings_panel.visible = true
 	_pause_music_enabled.button_pressed = SettingsManager.get_setting("music_enabled", true)
+	_pause_fullscreen.button_pressed = SettingsManager.get_setting("fullscreen", false)
 	_pause_reduced_motion.button_pressed = SettingsManager.get_setting("reduced_motion", false)
 
 func _on_pause_resume_pressed() -> void:
@@ -441,5 +528,6 @@ func _refresh_pause_text() -> void:
 	_pause_sfx_label.text = LocalizationManager.t("settings.sfx_volume")
 	_pause_music_label.text = LocalizationManager.t("settings.music_volume")
 	_pause_music_enabled.text = LocalizationManager.t("settings.music_enabled")
+	_pause_fullscreen.text = LocalizationManager.t("settings.fullscreen")
 	_pause_reduced_motion.text = LocalizationManager.t("settings.reduced_motion")
 	_pause_language.selected = 0 if LocalizationManager.language == "pt" else 1

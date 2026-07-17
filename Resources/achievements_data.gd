@@ -2,13 +2,34 @@ extends RefCounted
 
 static func get_achievements() -> Array[Dictionary]:
 	return [
-		{"id": "first_click", "steam_id": "AF_FIRST_CLICK", "name_key": "achievement.first_click.name", "description_key": "achievement.first_click.description", "icon": "✦", "metric": "aura_total", "target": 1.0},
+		{"id": "first_click", "steam_id": "AF_FIRST_CLICK", "name_key": "achievement.first_click.name", "description_key": "achievement.first_click.description", "icon": "✦", "metric": "clicks_total", "target": 1.0},
+		{"id": "ten_clicks", "steam_id": "AF_TEN_CLICKS", "name_key": "achievement.ten_clicks.name", "description_key": "achievement.ten_clicks.description", "icon": "•", "metric": "clicks_total", "target": 10.0},
+		{"id": "hundred_clicks", "steam_id": "AF_HUNDRED_CLICKS", "name_key": "achievement.hundred_clicks.name", "description_key": "achievement.hundred_clicks.description", "icon": "✹", "metric": "clicks_total", "target": 100.0},
+		{"id": "thousand_clicks", "steam_id": "AF_THOUSAND_CLICKS", "name_key": "achievement.thousand_clicks.name", "description_key": "achievement.thousand_clicks.description", "icon": "✺", "metric": "clicks_total", "target": 1000.0},
+		{"id": "first_aura", "steam_id": "AF_FIRST_AURA", "name_key": "achievement.first_aura.name", "description_key": "achievement.first_aura.description", "icon": "◆", "metric": "aura_total", "target": 1.0},
+		{"id": "aura_100", "steam_id": "AF_AURA_100", "name_key": "achievement.aura_100.name", "description_key": "achievement.aura_100.description", "icon": "◇", "metric": "aura_total", "target": 100.0},
 		{"id": "aura_1k", "steam_id": "AF_AURA_1K", "name_key": "achievement.aura_1k.name", "description_key": "achievement.aura_1k.description", "icon": "◆", "metric": "aura_total", "target": 1000.0},
+		{"id": "aura_10k", "steam_id": "AF_AURA_10K", "name_key": "achievement.aura_10k.name", "description_key": "achievement.aura_10k.description", "icon": "✧", "metric": "aura_total", "target": 10000.0},
+		{"id": "aura_100k", "steam_id": "AF_AURA_100K", "name_key": "achievement.aura_100k.name", "description_key": "achievement.aura_100k.description", "icon": "✦", "metric": "aura_total", "target": 100000.0},
 		{"id": "aura_1m", "steam_id": "AF_AURA_1M", "name_key": "achievement.aura_1m.name", "description_key": "achievement.aura_1m.description", "icon": "★", "metric": "aura_total", "target": 1000000.0},
-		{"id": "aura_50m", "steam_id": "AF_ANCIENT_CHAMPION", "name_key": "achievement.aura_50m.name", "description_key": "achievement.aura_50m.description", "icon": "☀", "metric": "aura_total", "target": 50000000.0},
+		{"id": "aura_10m", "steam_id": "AF_AURA_10M", "name_key": "achievement.aura_10m.name", "description_key": "achievement.aura_10m.description", "icon": "☀", "metric": "aura_total", "target": 10000000.0},
+		{"id": "aura_100m", "steam_id": "AF_AURA_100M", "name_key": "achievement.aura_100m.name", "description_key": "achievement.aura_100m.description", "icon": "✷", "metric": "aura_total", "target": 100000000.0},
+		{"id": "aura_1b", "steam_id": "AF_AURA_1B", "name_key": "achievement.aura_1b.name", "description_key": "achievement.aura_1b.description", "icon": "♛", "metric": "aura_total", "target": 1000000000.0},
+		{"id": "aura_1t", "steam_id": "AF_AURA_1T", "name_key": "achievement.aura_1t.name", "description_key": "achievement.aura_1t.description", "icon": "♜", "metric": "aura_total", "target": 1000000000000.0},
 		{"id": "first_upgrade", "steam_id": "AF_FIRST_UPGRADE", "name_key": "achievement.first_upgrade.name", "description_key": "achievement.first_upgrade.description", "icon": "$", "metric": "upgrade_count", "target": 1.0},
+		{"id": "five_upgrades", "steam_id": "AF_FIVE_UPGRADES", "name_key": "achievement.five_upgrades.name", "description_key": "achievement.five_upgrades.description", "icon": "$", "metric": "upgrade_count", "target": 5.0},
+		{"id": "twenty_upgrades", "steam_id": "AF_TWENTY_UPGRADES", "name_key": "achievement.twenty_upgrades.name", "description_key": "achievement.twenty_upgrades.description", "icon": "$", "metric": "upgrade_count", "target": 20.0},
+		{"id": "upgrade_level_10", "steam_id": "AF_UPGRADE_LEVEL_10", "name_key": "achievement.upgrade_level_10.name", "description_key": "achievement.upgrade_level_10.description", "icon": "▲", "metric": "max_upgrade_level", "target": 10.0},
+		{"id": "upgrade_level_50", "steam_id": "AF_UPGRADE_LEVEL_50", "name_key": "achievement.upgrade_level_50.name", "description_key": "achievement.upgrade_level_50.description", "icon": "▲", "metric": "max_upgrade_level", "target": 50.0},
+		{"id": "click_build", "steam_id": "AF_CLICK_BUILD", "name_key": "achievement.click_build.name", "description_key": "achievement.click_build.description", "icon": "☝", "metric": "category_level", "category": "click", "target": 10.0},
 		{"id": "auto_farm", "steam_id": "AF_AUTO_FARM", "name_key": "achievement.auto_farm.name", "description_key": "achievement.auto_farm.description", "icon": "⚙", "metric": "aura_per_second", "target": 1.0},
-		{"id": "first_rebirth", "steam_id": "AF_FIRST_REBIRTH", "name_key": "achievement.first_rebirth.name", "description_key": "achievement.first_rebirth.description", "icon": "∞", "metric": "prestige_level", "target": 1.0},
+		{"id": "auto_engine", "steam_id": "AF_AUTO_ENGINE", "name_key": "achievement.auto_engine.name", "description_key": "achievement.auto_engine.description", "icon": "⚙", "metric": "aura_per_second", "target": 1000.0},
+		{"id": "multiplier_build", "steam_id": "AF_MULTIPLIER_BUILD", "name_key": "achievement.multiplier_build.name", "description_key": "achievement.multiplier_build.description", "icon": "×", "metric": "category_level", "category": "multiplier", "target": 5.0},
+		{"id": "drip_dark_glasses", "steam_id": "AF_DRIP_DARK_GLASSES", "name_key": "achievement.drip_dark_glasses.name", "description_key": "achievement.drip_dark_glasses.description", "icon": "■", "metric": "specific_upgrade_level", "upgrade_id": "dark_glasses", "target": 1.0},
 		{"id": "legendary_skin", "steam_id": "AF_LEGENDARY_SKIN", "name_key": "achievement.legendary_skin.name", "description_key": "achievement.legendary_skin.description", "icon": "♛", "metric": "stage_index", "target": 7.0},
-		{"id": "cosmic_form", "steam_id": "AF_COSMIC_FORM", "name_key": "achievement.cosmic_form.name", "description_key": "achievement.cosmic_form.description", "icon": "✺", "metric": "stage_index", "target": 12.0}
+		{"id": "ancient_champion", "steam_id": "AF_ANCIENT_CHAMPION", "name_key": "achievement.ancient_champion.name", "description_key": "achievement.ancient_champion.description", "icon": "☀", "metric": "stage_index", "target": 8.0},
+		{"id": "first_rebirth", "steam_id": "AF_FIRST_REBIRTH", "name_key": "achievement.first_rebirth.name", "description_key": "achievement.first_rebirth.description", "icon": "∞", "metric": "prestige_level", "target": 1.0},
+		{"id": "essence_25", "steam_id": "AF_ESSENCE_25", "name_key": "achievement.essence_25.name", "description_key": "achievement.essence_25.description", "icon": "∞", "metric": "essence", "target": 25.0},
+		{"id": "cosmic_form", "steam_id": "AF_COSMIC_FORM", "name_key": "achievement.cosmic_form.name", "description_key": "achievement.cosmic_form.description", "icon": "✺", "metric": "stage_index", "target": 12.0},
+		{"id": "platinum", "steam_id": "AF_PLATINUM", "name_key": "achievement.platinum.name", "description_key": "achievement.platinum.description", "icon": "⬢", "metric": "platinum", "target": 1.0}
 	]

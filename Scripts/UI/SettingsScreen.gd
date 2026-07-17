@@ -14,8 +14,8 @@ func _build() -> void:
 
 	var panel: VBoxContainer = VBoxContainer.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(480, 360)
-	panel.position = Vector2(-240, -180)
+	panel.custom_minimum_size = Vector2(480, 420)
+	panel.position = Vector2(-240, -210)
 	panel.add_theme_constant_override("separation", 16)
 	add_child(panel)
 
@@ -55,6 +55,13 @@ func _build() -> void:
 	music_enabled.toggled.connect(func(value: bool): AudioManager.set_music_enabled(value))
 	music_enabled.add_theme_color_override("font_color", Color("#dbeafe"))
 	panel.add_child(music_enabled)
+
+	var fullscreen: CheckBox = CheckBox.new()
+	fullscreen.text = LocalizationManager.t("settings.fullscreen")
+	fullscreen.button_pressed = SettingsManager.get_setting("fullscreen", false)
+	fullscreen.toggled.connect(func(value: bool): SettingsManager.set_setting("fullscreen", value))
+	fullscreen.add_theme_color_override("font_color", Color("#dbeafe"))
+	panel.add_child(fullscreen)
 
 	var reduced_motion: CheckBox = CheckBox.new()
 	reduced_motion.text = LocalizationManager.t("settings.reduced_motion")

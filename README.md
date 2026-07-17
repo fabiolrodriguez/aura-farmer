@@ -20,7 +20,7 @@ Todos os managers são autoloads configurados em `project.godot`.
 - `AchievementManager`: conquistas locais com IDs preparados para integração futura com Steam.
 - `UIManager`: referência da cena de jogo ativa.
 - `LocalizationManager`: textos em português e inglês.
-- `SettingsManager`: idioma, volume e movimento reduzido.
+- `SettingsManager`: idioma, volume, fullscreen e movimento reduzido.
 - `NumberFormatter`: abreviações numéricas como `10K`, `1M`, `2.5B`, `Qa`, `Qi`.
 - `AuraEvolutionManager`: estágios visuais baseados na Aura total.
 
@@ -38,7 +38,7 @@ Todos os managers são autoloads configurados em `project.godot`.
 
 - `Scenes/Game/Game.tscn`
   - Script: `Scripts/UI/GameScreen.gd`
-  - Nós: `Background`, `GymBackground`, labels de status, `Character`, `ShopPanel`, `MusicButton`, `PopupLayer`.
+  - Nós: `Background`, `GymBackground`, labels de status, medidor de Essência, `Character`, `ShopPanel`, `MusicButton`, `PopupLayer`.
   - Sinais: conecta sinais dos managers para atualizar HUD, estágio, prestígio, mute de música, animação de compra, popup offline e pause via ESC.
 
 - `Scenes/Character/Character.tscn`
@@ -83,14 +83,19 @@ Todos os managers são autoloads configurados em `project.godot`.
 - `Assets/Sprites/Character/upgraded_character.png`: skin completa com óculos, corrente e tênis, ativada por upgrades visuais.
 - `Assets/Sprites/Character/golden_overdrive_character.png`: skin intermediária ativada aos 500k de Aura.
 - `Assets/Sprites/Character/legendary_character.png`: skin lendária ativada a partir de 1 milhão de Aura.
-- `Assets/Sprites/Character/heroic_champion_character.png`: skin de campeão ancestral ativada a partir de 50 milhões de Aura.
+- `Assets/Sprites/Character/legendary_drip_character.png`: variação lendária com óculos, corrente, tênis premium e aura dourada ativada a partir de 10 milhões de Aura.
+- `Assets/Sprites/Character/heroic_champion_character.png`: skin de campeão ancestral ativada a partir de 2 milhões de Aura.
 - `Assets/Sprites/Character/cosmic_character.png`: skin cósmica ativada em 10 bilhões de Aura.
 - `Assets/Sprites/Character/void_emperor_character.png`: forma de imperador do vazio ativada em 1 trilhão de Aura.
 - `Assets/UI/Logo/aura_farmer_67_logo.png`: logo da tela inicial.
+- `Assets/UI/Icon/aura_farmer_icon_1024.png`: ícone configurado no projeto Godot.
+- `Assets/Marketing/Steam/`: capsules, artes de biblioteca, ícones e artes de evento para Steamworks.
 
 ## Cenário
 
 `Scripts/Components/GymBackground.gd` desenha um cenário neonwave por código, sem sprites externos. A camada mantém o chão em perspectiva como elemento principal, com sol no horizonte, montanhas wireframe, estrelas sutis, reflexo e grade neon. O fundo usa baixa opacidade para manter o personagem como foco principal.
+
+Skins principais usam imagens completas para evitar desalinhamento de acessórios. `Scripts/Components/CharacterAccessoryOverlay.gd` fica reservado para efeitos abstratos pequenos, como brilho de café, creatina e aura sigma.
 
 ## Pause
 
@@ -98,7 +103,7 @@ Durante o jogo, `ESC` abre um menu de pause por overlay. O menu permite continua
 
 ## Conquistas
 
-As conquistas são salvas junto com o progresso e expostas pela tela `Scenes/Achievements/Achievements.tscn`. Para integração com Steam, conecte uma ponte compatível usando `AchievementManager.set_steam_bridge()`. O exemplo em `Scripts/Integrations/SteamAchievementBridge.gd` espera um objeto de API com métodos `setAchievement` e `storeStats`.
+As conquistas são salvas junto com o progresso e expostas pela tela `Scenes/Achievements/Achievements.tscn`. O catálogo tem 30 badges, começando com objetivos pequenos e terminando na platina. Para integração com Steam, conecte uma ponte compatível usando `AchievementManager.set_steam_bridge()`. O exemplo em `Scripts/Integrations/SteamAchievementBridge.gd` espera um objeto de API com métodos `setAchievement` e `storeStats`.
 
 ## Áudio
 

@@ -17,6 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Aura Farmer 6 7"
 run/main_scene="res://Scenes/MainMenu/MainMenu.tscn"
 config/features=PackedStringArray("4.6")
+config/icon="res://Assets/UI/Icon/aura_farmer_icon_1024.png"
 
 [autoload]
 

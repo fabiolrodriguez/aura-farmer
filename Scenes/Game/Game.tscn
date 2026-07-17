@@ -153,15 +153,49 @@ position = Vector2(390, 270)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="EssenceLabel" type="Label" parent="MainMargin/Layout/PlayArea/BottomBar"]
+[node name="EssencePanel" type="PanelContainer" parent="MainMargin/Layout/PlayArea/BottomBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EssenceMargin" type="MarginContainer" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="EssenceColumn" type="VBoxContainer" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel/EssenceMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EssenceTopRow" type="HBoxContainer" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel/EssenceMargin/EssenceColumn"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EssenceLabel" type="Label" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel/EssenceMargin/EssenceColumn/EssenceTopRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = ""
+theme_override_font_sizes/font_size = 18
+
+[node name="EssenceGainLabel" type="Label" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel/EssenceMargin/EssenceColumn/EssenceTopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 14
+
+[node name="EssenceProgress" type="ProgressBar" parent="MainMargin/Layout/PlayArea/BottomBar/EssencePanel/EssenceMargin/EssenceColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+show_percentage = false
 
 [node name="PrestigeButton" type="Button" parent="MainMargin/Layout/PlayArea/BottomBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 44)
+custom_minimum_size = Vector2(150, 70)
 layout_mode = 2
 text = ""
 

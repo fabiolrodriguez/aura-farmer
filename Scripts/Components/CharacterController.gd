@@ -4,6 +4,7 @@ const MAIN_TEXTURE_PATH: String = "res://Assets/Sprites/Character/main_character
 const UPGRADED_TEXTURE_PATH: String = "res://Assets/Sprites/Character/upgraded_character.png"
 const GOLDEN_TEXTURE_PATH: String = "res://Assets/Sprites/Character/golden_overdrive_character.png"
 const LEGENDARY_TEXTURE_PATH: String = "res://Assets/Sprites/Character/legendary_character.png"
+const LEGENDARY_DRIP_TEXTURE_PATH: String = "res://Assets/Sprites/Character/legendary_drip_character.png"
 const HEROIC_TEXTURE_PATH: String = "res://Assets/Sprites/Character/heroic_champion_character.png"
 const COSMIC_TEXTURE_PATH: String = "res://Assets/Sprites/Character/cosmic_character.png"
 const VOID_TEXTURE_PATH: String = "res://Assets/Sprites/Character/void_emperor_character.png"
@@ -85,7 +86,7 @@ func _refresh_accessories() -> void:
 	if not is_inside_tree():
 		return
 	var texture_path: String = _get_character_texture_path()
-	var is_legendary: bool = [GOLDEN_TEXTURE_PATH, LEGENDARY_TEXTURE_PATH, HEROIC_TEXTURE_PATH, COSMIC_TEXTURE_PATH, VOID_TEXTURE_PATH].has(texture_path)
+	var is_legendary: bool = [GOLDEN_TEXTURE_PATH, LEGENDARY_TEXTURE_PATH, LEGENDARY_DRIP_TEXTURE_PATH, HEROIC_TEXTURE_PATH, COSMIC_TEXTURE_PATH, VOID_TEXTURE_PATH].has(texture_path)
 	if accessory_overlay.has_method("set_legendary_skin"):
 		accessory_overlay.call("set_legendary_skin", is_legendary)
 	accessory_overlay.queue_redraw()

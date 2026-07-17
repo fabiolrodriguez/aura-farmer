@@ -12,6 +12,7 @@ var aura_per_second: float = 0.0
 var global_multiplier: float = 1.0
 var prestige_level: int = 0
 var essence: float = 0.0
+var clicks_total: int = 0
 var last_offline_seconds: float = 0.0
 var last_offline_amount: float = 0.0
 
@@ -34,6 +35,7 @@ func _process(delta: float) -> void:
 		add_aura(aura_per_second * delta, false)
 
 func click_aura(global_position: Vector2, effects_parent: Node) -> void:
+	clicks_total += 1
 	var gained: float = add_aura(aura_per_click, true)
 	EffectsManager.spawn_click_feedback(effects_parent, global_position, gained)
 	AudioManager.play_sfx(AudioManager.Sfx.CLICK)
@@ -86,6 +88,7 @@ func get_save_data() -> Dictionary:
 	return {
 		"aura_current": aura_current,
 		"aura_total": aura_total,
+		"clicks_total": clicks_total,
 		"prestige_level": prestige_level,
 		"essence": essence,
 		"stage_id": AuraEvolutionManager.get_current_stage().get("id", "normal")
@@ -94,6 +97,7 @@ func get_save_data() -> Dictionary:
 func apply_save_data(data: Dictionary) -> void:
 	aura_current = float(data.get("aura_current", 0.0))
 	aura_total = float(data.get("aura_total", 0.0))
+	clicks_total = int(data.get("clicks_total", 0))
 	prestige_level = int(data.get("prestige_level", 0))
 	essence = float(data.get("essence", 0.0))
 	AuraEvolutionManager.apply_stage_id(str(data.get("stage_id", "normal")))
