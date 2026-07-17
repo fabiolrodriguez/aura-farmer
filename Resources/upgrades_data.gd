@@ -1,0 +1,197 @@
+extends RefCounted
+
+static func get_upgrades() -> Array[Dictionary]:
+	return [
+		{
+			"id": "fresh_cut",
+			"name_key": "upgrade.fresh_cut.name",
+			"description_key": "upgrade.fresh_cut.description",
+			"category": "click",
+			"icon": "res://",
+			"base_price": 15.0,
+			"price_growth": 1.16,
+			"aura_per_click": 1.0,
+			"aura_per_second": 0.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "dark_glasses",
+			"name_key": "upgrade.dark_glasses.name",
+			"description_key": "upgrade.dark_glasses.description",
+			"category": "click",
+			"icon": "res://",
+			"base_price": 75.0,
+			"price_growth": 1.18,
+			"aura_per_click": 3.0,
+			"aura_per_second": 0.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "gold_chain",
+			"name_key": "upgrade.gold_chain.name",
+			"description_key": "upgrade.gold_chain.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 250.0,
+			"price_growth": 1.2,
+			"aura_per_click": 0.0,
+			"aura_per_second": 5.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "expensive_sneakers",
+			"name_key": "upgrade.expensive_sneakers.name",
+			"description_key": "upgrade.expensive_sneakers.description",
+			"category": "click",
+			"icon": "res://",
+			"base_price": 900.0,
+			"price_growth": 1.22,
+			"aura_per_click": 8.0,
+			"aura_per_second": 3.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "oversized_hoodie",
+			"name_key": "upgrade.oversized_hoodie.name",
+			"description_key": "upgrade.oversized_hoodie.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 2500.0,
+			"price_growth": 1.24,
+			"aura_per_click": 0.0,
+			"aura_per_second": 20.0,
+			"global_multiplier": 0.01
+		},
+		{
+			"id": "gaming_laptop",
+			"name_key": "upgrade.gaming_laptop.name",
+			"description_key": "upgrade.gaming_laptop.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 12000.0,
+			"price_growth": 1.25,
+			"aura_per_click": 15.0,
+			"aura_per_second": 60.0,
+			"global_multiplier": 0.02
+		},
+		{
+			"id": "premium_coffee",
+			"name_key": "upgrade.premium_coffee.name",
+			"description_key": "upgrade.premium_coffee.description",
+			"category": "multiplier",
+			"icon": "res://",
+			"base_price": 45000.0,
+			"price_growth": 1.27,
+			"aura_per_click": 50.0,
+			"aura_per_second": 120.0,
+			"global_multiplier": 0.025
+		},
+		{
+			"id": "infinite_creatine",
+			"name_key": "upgrade.infinite_creatine.name",
+			"description_key": "upgrade.infinite_creatine.description",
+			"category": "multiplier",
+			"icon": "res://",
+			"base_price": 175000.0,
+			"price_growth": 1.29,
+			"aura_per_click": 120.0,
+			"aura_per_second": 300.0,
+			"global_multiplier": 0.03
+		},
+		{
+			"id": "sigma_mode",
+			"name_key": "upgrade.sigma_mode.name",
+			"description_key": "upgrade.sigma_mode.description",
+			"category": "multiplier",
+			"icon": "res://",
+			"base_price": 1000000.0,
+			"price_growth": 1.31,
+			"aura_per_click": 500.0,
+			"aura_per_second": 1000.0,
+			"global_multiplier": 0.04
+		},
+		{
+			"id": "mysterious_energy",
+			"name_key": "upgrade.mysterious_energy.name",
+			"description_key": "upgrade.mysterious_energy.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 10000000.0,
+			"price_growth": 1.34,
+			"aura_per_click": 2500.0,
+			"aura_per_second": 8000.0,
+			"global_multiplier": 0.05
+		},
+		{
+			"id": "shorts_editor",
+			"name_key": "upgrade.shorts_editor.name",
+			"description_key": "upgrade.shorts_editor.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 100000000.0,
+			"price_growth": 1.36,
+			"aura_per_click": 10000.0,
+			"aura_per_second": 60000.0,
+			"global_multiplier": 0.06
+		},
+		{
+			"id": "npc_admirers",
+			"name_key": "upgrade.npc_admirers.name",
+			"description_key": "upgrade.npc_admirers.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 500.0,
+			"price_growth": 1.17,
+			"aura_per_click": 0.0,
+			"aura_per_second": 2.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "motivational_course",
+			"name_key": "upgrade.motivational_course.name",
+			"description_key": "upgrade.motivational_course.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 5000.0,
+			"price_growth": 1.21,
+			"aura_per_click": 0.0,
+			"aura_per_second": 35.0,
+			"global_multiplier": 0.0
+		},
+		{
+			"id": "discipline",
+			"name_key": "upgrade.discipline.name",
+			"description_key": "upgrade.discipline.description",
+			"category": "click",
+			"icon": "res://",
+			"base_price": 18000.0,
+			"price_growth": 1.25,
+			"aura_per_click": 80.0,
+			"aura_per_second": 0.0,
+			"global_multiplier": 0.01
+		},
+		{
+			"id": "mindset",
+			"name_key": "upgrade.mindset.name",
+			"description_key": "upgrade.mindset.description",
+			"category": "multiplier",
+			"icon": "res://",
+			"base_price": 250000.0,
+			"price_growth": 1.3,
+			"aura_per_click": 0.0,
+			"aura_per_second": 0.0,
+			"global_multiplier": 0.08
+		},
+		{
+			"id": "cosmic_aura_subscription",
+			"name_key": "upgrade.cosmic_aura_subscription.name",
+			"description_key": "upgrade.cosmic_aura_subscription.description",
+			"category": "auto",
+			"icon": "res://",
+			"base_price": 5000000.0,
+			"price_growth": 1.32,
+			"aura_per_click": 0.0,
+			"aura_per_second": 5000.0,
+			"global_multiplier": 0.02
+		}
+	]

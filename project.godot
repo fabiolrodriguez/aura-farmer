@@ -1,0 +1,39 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Aura Farmer 6 7"
+run/main_scene="res://Scenes/MainMenu/MainMenu.tscn"
+config/features=PackedStringArray("4.6")
+
+[autoload]
+
+LocalizationManager="*res://Scripts/Managers/LocalizationManager.gd"
+NumberFormatter="*res://Scripts/Managers/NumberFormatter.gd"
+SettingsManager="*res://Scripts/Managers/SettingsManager.gd"
+AudioManager="*res://Scripts/Managers/AudioManager.gd"
+SaveManager="*res://Scripts/Managers/SaveManager.gd"
+UpgradeManager="*res://Scripts/Managers/UpgradeManager.gd"
+AuraEvolutionManager="*res://Scripts/Managers/AuraEvolutionManager.gd"
+EffectsManager="*res://Scripts/Managers/EffectsManager.gd"
+AchievementManager="*res://Scripts/Managers/AchievementManager.gd"
+GameManager="*res://Scripts/Managers/GameManager.gd"
+UIManager="*res://Scripts/Managers/UIManager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
