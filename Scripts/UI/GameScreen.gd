@@ -64,6 +64,7 @@ func _ready() -> void:
 	_style_stage_panel()
 	_style_essence_panel()
 	_build_pause_menu()
+	AuraEvolutionManager.validate_for_total_aura(GameManager.aura_total)
 	_refresh()
 	_refresh_pause_text()
 	_on_stage_changed(AuraEvolutionManager.get_current_stage(), AuraEvolutionManager.current_stage_index)

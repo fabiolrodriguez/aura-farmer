@@ -1,9 +1,6 @@
 extends Node2D
 
-var is_legendary_skin: bool = false
-
-func set_legendary_skin(value: bool) -> void:
-	is_legendary_skin = value
+func set_legendary_skin(_value: bool) -> void:
 	queue_redraw()
 
 func _draw() -> void:

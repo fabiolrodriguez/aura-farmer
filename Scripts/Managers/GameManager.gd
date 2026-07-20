@@ -27,7 +27,7 @@ func _ready() -> void:
 		recalculate_generation()
 		_apply_offline_progress(float(data.get("saved_at", Time.get_unix_time_from_system())))
 	recalculate_generation()
-	AuraEvolutionManager.update_for_total_aura(aura_total)
+	AuraEvolutionManager.validate_for_total_aura(aura_total)
 	AchievementManager.evaluate_all()
 
 func _process(delta: float) -> void:

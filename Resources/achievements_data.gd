@@ -30,6 +30,6 @@ static func get_achievements() -> Array[Dictionary]:
 		{"id": "ancient_champion", "steam_id": "AF_ANCIENT_CHAMPION", "name_key": "achievement.ancient_champion.name", "description_key": "achievement.ancient_champion.description", "icon": "☀", "metric": "stage_index", "target": 8.0},
 		{"id": "first_rebirth", "steam_id": "AF_FIRST_REBIRTH", "name_key": "achievement.first_rebirth.name", "description_key": "achievement.first_rebirth.description", "icon": "∞", "metric": "prestige_level", "target": 1.0},
 		{"id": "essence_25", "steam_id": "AF_ESSENCE_25", "name_key": "achievement.essence_25.name", "description_key": "achievement.essence_25.description", "icon": "∞", "metric": "essence", "target": 25.0},
-		{"id": "cosmic_form", "steam_id": "AF_COSMIC_FORM", "name_key": "achievement.cosmic_form.name", "description_key": "achievement.cosmic_form.description", "icon": "✺", "metric": "stage_index", "target": 12.0},
+		{"id": "cosmic_form", "steam_id": "AF_COSMIC_FORM", "name_key": "achievement.cosmic_form.name", "description_key": "achievement.cosmic_form.description", "icon": "✺", "metric": "stage_index", "target": 10.0},
 		{"id": "platinum", "steam_id": "AF_PLATINUM", "name_key": "achievement.platinum.name", "description_key": "achievement.platinum.description", "icon": "⬢", "metric": "platinum", "target": 1.0}
 	]

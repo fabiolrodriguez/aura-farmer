@@ -86,6 +86,7 @@ Todos os managers são autoloads configurados em `project.godot`.
 - `Assets/Sprites/Character/legendary_drip_character.png`: variação lendária com óculos, corrente, tênis premium e aura dourada ativada a partir de 10 milhões de Aura.
 - `Assets/Sprites/Character/heroic_champion_character.png`: skin de campeão ancestral ativada a partir de 2 milhões de Aura.
 - `Assets/Sprites/Character/cosmic_character.png`: skin cósmica ativada em 10 bilhões de Aura.
+- `Assets/Sprites/Character/cosmic_1_character.png` ate `cosmic_9_character.png`: progressão cósmica de 100M a 900M de Aura, com `cosmic_500m_character.png` como marco especial.
 - `Assets/Sprites/Character/void_emperor_character.png`: forma de imperador do vazio ativada em 1 trilhão de Aura.
 - `Assets/UI/Logo/aura_farmer_67_logo.png`: logo da tela inicial.
 - `Assets/UI/Icon/aura_farmer_icon_1024.png`: ícone configurado no projeto Godot.
