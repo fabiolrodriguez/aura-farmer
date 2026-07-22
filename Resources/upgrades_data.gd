@@ -15,6 +15,18 @@ static func get_upgrades() -> Array[Dictionary]:
 			"global_multiplier": 0.0
 		},
 		{
+			"id": "nescau_ball",
+			"name_key": "upgrade.nescau_ball.name",
+			"description_key": "upgrade.nescau_ball.description",
+			"category": "click",
+			"icon": "res://",
+			"base_price": 40.0,
+			"price_growth": 1.17,
+			"aura_per_click": 2.0,
+			"aura_per_second": 0.0,
+			"global_multiplier": 0.0
+		},
+		{
 			"id": "dark_glasses",
 			"name_key": "upgrade.dark_glasses.name",
 			"description_key": "upgrade.dark_glasses.description",
@@ -133,6 +145,18 @@ static func get_upgrades() -> Array[Dictionary]:
 			"aura_per_click": 10000.0,
 			"aura_per_second": 60000.0,
 			"global_multiplier": 0.06
+		},
+		{
+			"id": "low_volume_training",
+			"name_key": "upgrade.low_volume_training.name",
+			"description_key": "upgrade.low_volume_training.description",
+			"category": "multiplier",
+			"icon": "res://",
+			"base_price": 1000000000000.0,
+			"price_growth": 2.4,
+			"aura_per_click": 5000000.0,
+			"aura_per_second": 100000000.0,
+			"global_multiplier": 0.5
 		},
 		{
 			"id": "npc_admirers",

@@ -22,6 +22,8 @@ extends Control
 
 const OfflinePopupScene = preload("res://Scenes/Popup/OfflinePopup.tscn")
 const CHARACTER_CLICK_RADIUS: float = 250.0
+const PRESTIGE_REQUIREMENT: float = 1000000.0
+const CLICK_CURSOR_SIZE: int = 32
 
 var _auto_feedback_timer: float = 0.0
 var _pause_layer: CanvasLayer
@@ -42,6 +44,9 @@ var _pause_music_enabled: CheckBox
 var _pause_fullscreen: CheckBox
 var _pause_reduced_motion: CheckBox
 var _is_pause_settings_open: bool = false
+var _prestige_dialog: ConfirmationDialog
+var _click_cursor_texture: Texture2D
+var _is_click_cursor_active: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -55,6 +60,7 @@ func _ready() -> void:
 	LocalizationManager.language_changed.connect(_refresh)
 	LocalizationManager.language_changed.connect(_on_language_changed)
 	character_anchor.gui_input.connect(_on_character_anchor_gui_input)
+	character_anchor.mouse_exited.connect(_clear_click_cursor)
 	prestige_button.pressed.connect(_on_prestige_pressed)
 	prestige_button.mouse_entered.connect(func(): AudioManager.play_sfx(AudioManager.Sfx.HOVER))
 	music_button.pressed.connect(_on_music_pressed)
@@ -63,7 +69,10 @@ func _ready() -> void:
 	_style_button(music_button, true)
 	_style_stage_panel()
 	_style_essence_panel()
+	_style_tooltips()
 	_build_pause_menu()
+	_build_prestige_dialog()
+	_click_cursor_texture = _build_click_cursor_texture()
 	AuraEvolutionManager.validate_for_total_aura(GameManager.aura_total)
 	_refresh()
 	_refresh_pause_text()
@@ -74,6 +83,7 @@ func _ready() -> void:
 		GameManager.last_offline_amount = 0.0
 
 func _exit_tree() -> void:
+	_clear_click_cursor()
 	get_tree().paused = false
 	UIManager.unregister_game_scene(self)
 
@@ -124,14 +134,12 @@ func _refresh() -> void:
 		stage_progress.value = progress_value
 	prestige_button.text = LocalizationManager.t("ui.prestige")
 	prestige_button.disabled = not GameManager.can_prestige()
+	_refresh_tooltips()
 	music_button.text = "♪" if AudioManager.is_music_enabled() else "×"
 
 func _refresh_essence_meter() -> void:
-	var prestige_requirement: float = 1000000.0
-	var progress_value: float = clamp(GameManager.aura_current / prestige_requirement, 0.0, 1.0)
-	var gained_essence: float = 0.0
-	if GameManager.can_prestige():
-		gained_essence = max(1.0, floor(sqrt(GameManager.aura_current / prestige_requirement)))
+	var progress_value: float = clamp(GameManager.aura_current / PRESTIGE_REQUIREMENT, 0.0, 1.0)
+	var gained_essence: float = _get_pending_essence()
 	var bonus_percent: float = GameManager.essence * 5.0
 	essence_label.text = "%s\n%s" % [
 		LocalizationManager.t("ui.essence"),
@@ -145,7 +153,7 @@ func _refresh_essence_meter() -> void:
 	else:
 		essence_gain_label.text = LocalizationManager.t("ui.essence_next", {
 			"percent": NumberFormatter.format(progress_value * 100.0),
-			"target": NumberFormatter.format(prestige_requirement)
+			"target": NumberFormatter.format(PRESTIGE_REQUIREMENT)
 		})
 	essence_progress.max_value = 1.0
 	essence_progress.value = progress_value
@@ -153,6 +161,8 @@ func _refresh_essence_meter() -> void:
 
 func _on_language_changed(_language: String) -> void:
 	_refresh_pause_text()
+	_refresh_prestige_dialog_text()
+	_refresh_tooltips()
 
 func _on_stage_changed(stage: Dictionary, _index: int) -> void:
 	var background: ColorRect = %Background as ColorRect
@@ -166,7 +176,11 @@ func _on_stage_changed(stage: Dictionary, _index: int) -> void:
 	_refresh()
 
 func _on_prestige_pressed() -> void:
-	GameManager.prestige()
+	if not GameManager.can_prestige():
+		return
+	_clear_click_cursor()
+	_refresh_prestige_dialog_text()
+	_prestige_dialog.popup_centered(Vector2(460.0, 320.0))
 
 func _on_music_pressed() -> void:
 	AudioManager.toggle_music()
@@ -176,9 +190,14 @@ func _on_upgrade_purchased(_upgrade_id: String) -> void:
 	_spawn_purchase_trail()
 
 func _on_character_anchor_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		var motion_event: InputEventMouseMotion = event as InputEventMouseMotion
+		_update_click_cursor(motion_event.position)
+		return
 	if not event is InputEventMouseButton:
 		return
 	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	_update_click_cursor(mouse_event.position)
 	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
 		return
 	if mouse_event.position.distance_to(character.position) > CHARACTER_CLICK_RADIUS:
@@ -186,6 +205,104 @@ func _on_character_anchor_gui_input(event: InputEvent) -> void:
 	if character.has_method("handle_player_click"):
 		character.call("handle_player_click", self)
 		accept_event()
+
+func _get_pending_essence() -> float:
+	if not GameManager.can_prestige():
+		return 0.0
+	return max(1.0, floor(sqrt(GameManager.aura_current / PRESTIGE_REQUIREMENT)))
+
+func _refresh_tooltips() -> void:
+	var pending_essence: float = _get_pending_essence()
+	if GameManager.can_prestige():
+		prestige_button.tooltip_text = LocalizationManager.t("ui.prestige_tooltip_ready", {
+			"amount": NumberFormatter.format(pending_essence)
+		})
+	else:
+		prestige_button.tooltip_text = LocalizationManager.t("ui.prestige_tooltip_locked", {
+			"requirement": NumberFormatter.format(PRESTIGE_REQUIREMENT)
+		})
+	var bonus_percent: float = GameManager.essence * 5.0
+	var essence_tooltip: String = LocalizationManager.t("ui.essence_tooltip", {
+		"bonus": NumberFormatter.format(bonus_percent)
+	})
+	essence_panel.tooltip_text = essence_tooltip
+	essence_label.tooltip_text = essence_tooltip
+	essence_gain_label.tooltip_text = essence_tooltip
+	essence_progress.tooltip_text = essence_tooltip
+
+func _build_prestige_dialog() -> void:
+	_prestige_dialog = ConfirmationDialog.new()
+	_prestige_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
+	_prestige_dialog.unresizable = true
+	_prestige_dialog.exclusive = true
+	_prestige_dialog.confirmed.connect(_on_prestige_confirmed)
+	_prestige_dialog.canceled.connect(func(): AudioManager.play_sfx(AudioManager.Sfx.CLICK))
+	_prestige_dialog.close_requested.connect(func(): AudioManager.play_sfx(AudioManager.Sfx.CLICK))
+	if _prestige_dialog.has_method("add_theme_stylebox_override"):
+		_prestige_dialog.call("add_theme_stylebox_override", "panel", _make_panel_style())
+	if _prestige_dialog.has_method("add_theme_color_override"):
+		_prestige_dialog.call("add_theme_color_override", "title_color", Color("#fff7d6"))
+		_prestige_dialog.call("add_theme_color_override", "font_color", Color("#dbeafe"))
+	add_child(_prestige_dialog)
+	_refresh_prestige_dialog_text()
+
+func _refresh_prestige_dialog_text() -> void:
+	if _prestige_dialog == null:
+		return
+	_prestige_dialog.title = LocalizationManager.t("ui.prestige_confirm_title")
+	_prestige_dialog.dialog_text = LocalizationManager.t("ui.prestige_confirm_body", {
+		"amount": NumberFormatter.format(_get_pending_essence())
+	})
+	_prestige_dialog.get_ok_button().text = LocalizationManager.t("ui.prestige_confirm")
+	_prestige_dialog.get_cancel_button().text = LocalizationManager.t("ui.cancel")
+	_style_button(_prestige_dialog.get_ok_button(), false)
+	_style_button(_prestige_dialog.get_cancel_button(), false)
+
+func _on_prestige_confirmed() -> void:
+	AudioManager.play_sfx(AudioManager.Sfx.CLICK)
+	GameManager.prestige()
+
+func _update_click_cursor(local_position: Vector2) -> void:
+	var is_over_character: bool = local_position.distance_to(character.position) <= CHARACTER_CLICK_RADIUS
+	if is_over_character and not _is_click_cursor_active:
+		Input.set_custom_mouse_cursor(_click_cursor_texture, Input.CURSOR_ARROW, Vector2(8.0, 8.0))
+		_is_click_cursor_active = true
+	elif not is_over_character and _is_click_cursor_active:
+		_clear_click_cursor()
+
+func _clear_click_cursor() -> void:
+	if not _is_click_cursor_active:
+		return
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+	_is_click_cursor_active = false
+
+func _build_click_cursor_texture() -> Texture2D:
+	var image: Image = Image.create_empty(CLICK_CURSOR_SIZE, CLICK_CURSOR_SIZE, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0.0, 0.0, 0.0, 0.0))
+	var glow: Color = Color(0.13, 0.83, 0.93, 0.42)
+	var gold: Color = Color("#facc15")
+	var white: Color = Color.WHITE
+	for y in range(CLICK_CURSOR_SIZE):
+		for x in range(CLICK_CURSOR_SIZE):
+			var point: Vector2 = Vector2(float(x), float(y))
+			var distance: float = point.distance_to(Vector2(12.0, 12.0))
+			if distance >= 9.5 and distance <= 11.0:
+				image.set_pixel(x, y, glow)
+			elif distance >= 5.5 and distance <= 6.8:
+				image.set_pixel(x, y, Color(1.0, 1.0, 1.0, 0.62))
+	for i in range(5, 20):
+		image.set_pixel(i, 12, gold)
+		image.set_pixel(12, i, gold)
+	for i in range(9, 16):
+		image.set_pixel(i, i, white)
+		image.set_pixel(i + 1, i, white)
+	for y in range(17, 29):
+		image.set_pixel(19, y, white)
+		image.set_pixel(20, y, white)
+	for x in range(17, 25):
+		image.set_pixel(x, 21, white)
+	var texture: ImageTexture = ImageTexture.create_from_image(image)
+	return texture
 
 func _show_offline_popup(seconds: float, amount: float) -> void:
 	var popup: Node = OfflinePopupScene.instantiate()
@@ -305,6 +422,31 @@ func _style_essence_panel() -> void:
 	fill.corner_radius_bottom_right = 6
 	essence_progress.add_theme_stylebox_override("background", background)
 	essence_progress.add_theme_stylebox_override("fill", fill)
+
+func _style_tooltips() -> void:
+	var tooltip_theme: Theme = Theme.new()
+	var panel_style: StyleBoxFlat = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.025, 0.03, 0.06, 0.97)
+	panel_style.border_color = Color(0.34, 0.91, 1.0, 0.72)
+	panel_style.border_width_left = 1
+	panel_style.border_width_top = 1
+	panel_style.border_width_right = 1
+	panel_style.border_width_bottom = 1
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	panel_style.content_margin_left = 12.0
+	panel_style.content_margin_top = 10.0
+	panel_style.content_margin_right = 12.0
+	panel_style.content_margin_bottom = 10.0
+	tooltip_theme.set_stylebox("panel", "TooltipPanel", panel_style)
+	tooltip_theme.set_color("font_color", "TooltipLabel", Color("#ecfeff"))
+	tooltip_theme.set_color("font_shadow_color", "TooltipLabel", Color(0.0, 0.0, 0.0, 0.85))
+	tooltip_theme.set_constant("shadow_offset_x", "TooltipLabel", 1)
+	tooltip_theme.set_constant("shadow_offset_y", "TooltipLabel", 1)
+	tooltip_theme.set_font_size("font_size", "TooltipLabel", 14)
+	theme = tooltip_theme
 
 func _apply_essence_meter_state() -> void:
 	var panel_style: StyleBoxFlat = essence_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
@@ -480,6 +622,8 @@ func _make_panel_style() -> StyleBoxFlat:
 	return style
 
 func _set_paused(paused: bool) -> void:
+	if paused:
+		_clear_click_cursor()
 	get_tree().paused = paused
 	_pause_layer.visible = paused
 	if paused:

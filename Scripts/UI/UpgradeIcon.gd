@@ -27,7 +27,11 @@ func _draw() -> void:
 func _draw_symbol(center: Vector2, radius: float) -> void:
 	var upgrade_id: String = str(upgrade.get("id", ""))
 	var color: Color = Color.WHITE
-	if upgrade_id.contains("glasses"):
+	if upgrade_id == "nescau_ball":
+		_draw_cereal_ball(center)
+	elif upgrade_id == "low_volume_training":
+		_draw_low_volume(center, radius)
+	elif upgrade_id.contains("glasses"):
 		_draw_glasses(center, color)
 	elif upgrade_id.contains("chain"):
 		_draw_chain(center, color)
@@ -105,3 +109,26 @@ func _draw_star(center: Vector2, radius: float, color: Color) -> void:
 		var point_radius: float = radius * (0.52 if i % 2 == 0 else 0.24)
 		points.append(center + Vector2(cos(angle), sin(angle)) * point_radius)
 	draw_polygon(points, PackedColorArray([color]))
+
+func _draw_cereal_ball(center: Vector2) -> void:
+	var shell_color: Color = Color("#7c2d12")
+	var shine_color: Color = Color("#fbbf24")
+	var bite_color: Color = Color("#fed7aa")
+	draw_circle(center, 17.0, shell_color, true)
+	draw_circle(center + Vector2(-5, -5), 9.0, Color("#b45309"), true)
+	draw_circle(center + Vector2(7, 6), 5.0, Color("#451a03"), true)
+	draw_circle(center + Vector2(6, -8), 4.0, bite_color, true)
+	draw_arc(center, 19.0, -0.15 * PI, 1.12 * PI, 24, shine_color, 3.0)
+	draw_circle(center + Vector2(-8, -10), 3.0, Color.WHITE, true)
+
+func _draw_low_volume(center: Vector2, radius: float) -> void:
+	var bar_color: Color = Color.WHITE
+	var power_color: Color = Color("#facc15")
+	draw_arc(center, radius * 0.5, -0.15 * PI, 1.15 * PI, 28, power_color, 3.0)
+	draw_arc(center, radius * 0.36, 0.15 * PI, 1.35 * PI, 24, Color("#c084fc"), 2.0)
+	draw_line(center + Vector2(-22, 0), center + Vector2(22, 0), bar_color, 4.0)
+	draw_rect(Rect2(center + Vector2(-27, -12), Vector2(5, 24)), bar_color, true)
+	draw_rect(Rect2(center + Vector2(-34, -16), Vector2(6, 32)), bar_color, true)
+	draw_rect(Rect2(center + Vector2(22, -12), Vector2(5, 24)), bar_color, true)
+	draw_rect(Rect2(center + Vector2(28, -16), Vector2(6, 32)), bar_color, true)
+	draw_circle(center, 6.0, power_color, true)
